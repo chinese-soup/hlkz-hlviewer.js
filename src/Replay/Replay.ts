@@ -556,13 +556,16 @@ export class Replay {
       throw new Error('Invalid replay file format')
     }*/
 
+    let hlkzlines = [];
 
     while (r.tell() < buffer.byteLength) {
       let hlkzline = readHlkzLine(r)
-      console.log(hlkzline)
+      //console.log(hlkzline)
+      hlkzlines.push(hlkzline)
       r.skip(30)
-      
     }
+    
+    return hlkzlines
 /*
     let maps = []
     let deltaDecoders = getInitialDeltaDecoders()

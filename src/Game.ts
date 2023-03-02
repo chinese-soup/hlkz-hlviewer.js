@@ -318,6 +318,7 @@ export class Game {
   }
 
   update(dt: number) {
+    console.log("This update?")
     this.events.emit('preupdate', this)
 
     const camera = this.camera

@@ -252,6 +252,9 @@ export class Loader {
 
     const replay = await Replay.parseIntoChunks(hlkz_buffer)
     this.replay.done(replay)
+    this.replay.data = replay;
+
+    
 
     //this.loadMap(replay.maps[0].name + '.bsp')
     //TODO: lol

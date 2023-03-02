@@ -54,8 +54,9 @@ export class Time extends Component<TimeProps, TimeState> {
   }
 
   render() {
+
     const current = formatTime(this.props.player.currentTime)
-    const total = formatTime(this.props.player.replay.length)
+    const total = 0;//formatTime(this.props.player.replay.length)
 
     return (
       <div class={s.time}>

@@ -44,12 +44,12 @@ export class ReplayPlayer {
     this.isPlaying = false
     this.isPaused = false
     this.speed = 1
-
-    if (this.replay) {
+    console.log(this.replay);
+    /*if (this.replay) {
       let firstChunk = this.replay.maps[0].chunks[0]
       firstChunk.reader.seek(0)
       this.state = firstChunk.state.clone()
-    }
+    }*/
   }
 
   changeReplay(replay: Replay) {
@@ -136,8 +136,20 @@ export class ReplayPlayer {
 
   update(dt: number) {
     if (!this.isPlaying || this.isPaused) {
+      console.log("not update rofl");
       return
     }
+    this.currentTick += 1;
+    let rofl = this.currentTick;
+    console.log("update rofl", rofl, dt, this.currentTick);
+    let state2 = new ReplayState()
+    state2.cameraPos = [this.replay[rofl].x, this.replay[rofl].y, this.replay[rofl].z];
+    state2.cameraRot = [this.replay[rofl].anglesx, this.replay[rofl].anglesy, this.replay[rofl].anglesz];
+    updateGame(this.game, state2);
+
+    // @ts-ignore
+   /* let state = new ReplayState()
+
 
     let deltaDecoders = this.replay.deltaDecoders
     let customMessages = this.replay.customMessages
@@ -258,6 +270,6 @@ export class ReplayPlayer {
 
     if (hitStop) {
       this.stop()
-    }
+    }*/
   }
 }
