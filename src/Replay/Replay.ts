@@ -4,7 +4,7 @@ import { ReplayState } from './ReplayState'
 import { Reader, ReaderDataType } from '../Reader'
 import { FrameDataReader } from './FrameDataReader'
 import { getInitialDeltaDecoders } from './readDelta'
-
+// @ts-ignore
 const checkType = (r: Reader) => {
   let magic = r.nstr(8)
   return magic === 'HLDEMO'
@@ -17,6 +17,18 @@ const readHeader = (r: Reader) => ({
   modName: r.nstr(260),
   mapCrc: r.i(),
   dirOffset: r.ui()
+})
+
+
+const readHlkzLine = (r: Reader) => ({
+  time: r.f(),
+  x: r.f(),
+  y: r.f(),
+  z: r.f(),
+  anglesx: r.f(),
+  anglesy: r.f(),
+  anglesz: r.f(),
+  buttons: r.f(),
 })
 
 const readDirectories = (r: Reader, offset: number) => {
@@ -540,9 +552,12 @@ export class Replay {
   static parseIntoChunks(buffer: ArrayBuffer) {
     let r = new Reader(buffer)
 
-    if (!checkType(r)) {
+    /*if (!checkType(r)) {
       throw new Error('Invalid replay file format')
-    }
+    }*/
+
+    let hlkzline = readHlkzLine(r)
+    console.log(hlkzline)
 
     let maps = []
     let deltaDecoders = getInitialDeltaDecoders()
@@ -723,6 +738,10 @@ export class Replay {
 
   static readHeader(r: Reader) {
     return readHeader(r)
+  }
+  
+  static readHlkzLine(r: Reader) {
+    return readHlkzLine(r)
   }
 
   static readDirectories(r: Reader, offset: number) {

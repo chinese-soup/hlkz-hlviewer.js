@@ -9,6 +9,7 @@ import { Replay } from './Replay/Replay'
 import { Sprite } from './Parsers/Sprite'
 import { ProgressCallback, xhr } from './Xhr'
 import { BspParser } from './Parsers/BspParser'
+//import { mrdat } from './Replay/JustATest'
 
 enum LoadItemStatus {
   Loading = 1,
@@ -167,7 +168,7 @@ export class Loader {
 
   load(name: string) {
     const extension = extname(name)
-    if (extension === '.dem') {
+    if (extension === '.dat') {
       this.loadReplay(name)
     } else if (extension === '.bsp') {
       this.loadMap(name)
@@ -177,6 +178,10 @@ export class Loader {
   }
 
   async loadReplay(name: string) {
+
+    //mrdat();
+
+  
     this.replay = new LoadItemReplay(name)
     this.events.emit('loadstart', this.replay)
 
@@ -189,7 +194,7 @@ export class Loader {
     }
 
     const replayPath = this.config.getReplaysPath()
-    const buffer = await xhr(`${replayPath}/${name}`, {
+    /*const buffer = await xhr(`${replayPath}/${name}`, {
       method: 'GET',
       isBinary: true,
       progressCallback
@@ -202,9 +207,50 @@ export class Loader {
 
     if (this.replay.isError()) {
       return
-    }
+    }*/
 
-    const replay = await Replay.parseIntoChunks(buffer)
+    const hlkz_buffer = await xhr(`${replayPath}/${name}`, {
+      method: 'GET',
+      isBinary: true,
+      progressCallback
+    }).catch((err: any) => {
+      if (this.replay) {
+        this.replay.error()
+      }
+      this.events.emit('error', err, this.replay)
+    })
+
+/*  let result = [
+      
+  ];
+
+  console.log(hlkz_buffer.length);
+  let len = hlkz_buffer.length; /// 30;
+  let offset = 0;
+
+  console.log(hlkz_buffer);*/
+  /*while(true) {
+      var result2 = {
+          time: hlkz_buffer.readFloatLE(0 + offset),
+          x: hlkz_buffer.readFloatLE(4 + offset),
+          y: hlkz_buffer.readFloatLE(8 + offset),
+          z: hlkz_buffer.readFloatLE(12 + offset),
+          anglesx: hlkz_buffer.readFloatLE(16 + offset),
+          anglesy: hlkz_buffer.readFloatLE(20 + offset),
+          anglesz: hlkz_buffer.readFloatLE(24 + offset),
+          buttons: hlkz_buffer.readUInt8(28 + offset)
+      }
+      console.log(result2);
+      result.push(result2);
+
+      offset += 30;
+      console.log(offset, len);
+
+      if (offset <= len)
+          break;
+  }*/
+
+    const replay = await Replay.parseIntoChunks(hlkz_buffer)
     this.replay.done(replay)
 
     this.loadMap(replay.maps[0].name + '.bsp')
