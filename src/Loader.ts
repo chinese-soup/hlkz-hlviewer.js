@@ -253,14 +253,16 @@ export class Loader {
     const replay = await Replay.parseIntoChunks(hlkz_buffer)
     this.replay.done(replay)
 
-    this.loadMap(replay.maps[0].name + '.bsp')
+    //this.loadMap(replay.maps[0].name + '.bsp')
+    //TODO: lol
+    this.loadMap("bkz_goldbhop.bsp")
 
-    const sounds = replay.maps[0].resources.sounds
+    /*const sounds = replay.maps[0].resources.sounds
     sounds.forEach((sound: any) => {
       if (sound.used) {
         this.loadSound(sound.name, sound.index)
       }
-    })
+    })*/
 
     this.events.emit('load', this.replay)
     this.checkStatus()

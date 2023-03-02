@@ -1,7 +1,7 @@
-import { ReplayMap } from './ReplayMap'
+/*import { ReplayMap } from './ReplayMap'
 import { ReplayChunk } from './ReplayChunk'
-import { ReplayState } from './ReplayState'
-import { Reader, ReaderDataType } from '../Reader'
+import { ReplayState } from './ReplayState'*/
+import { Reader,  } from '../Reader' // ReaderDataType
 import { FrameDataReader } from './FrameDataReader'
 import { getInitialDeltaDecoders } from './readDelta'
 // @ts-ignore
@@ -28,7 +28,7 @@ const readHlkzLine = (r: Reader) => ({
   anglesx: r.f(),
   anglesy: r.f(),
   anglesz: r.f(),
-  buttons: r.f(),
+  buttons: r.us(),
 })
 
 const readDirectories = (r: Reader, offset: number) => {
@@ -556,9 +556,14 @@ export class Replay {
       throw new Error('Invalid replay file format')
     }*/
 
-    let hlkzline = readHlkzLine(r)
-    console.log(hlkzline)
 
+    while (r.tell() < buffer.byteLength) {
+      let hlkzline = readHlkzLine(r)
+      console.log(hlkzline)
+      r.skip(30)
+      
+    }
+/*
     let maps = []
     let deltaDecoders = getInitialDeltaDecoders()
     let customMessages: any[] = []
@@ -585,7 +590,7 @@ export class Replay {
         throw new Error('Encountered error while reading replay')
       }
 
-      if (frame.type < 2 /* 0 or 1 */) {
+      if (frame.type < 2 /* 0 or 1 ) {
         let serverInfo = frame.data.find(
           (msg: any) => msg.type === FrameDataReader.SVC.SERVERINFO
         )
@@ -733,7 +738,7 @@ export class Replay {
       maps,
       deltaDecoders,
       customMessages
-    }
+    }*/
   }
 
   static readHeader(r: Reader) {
