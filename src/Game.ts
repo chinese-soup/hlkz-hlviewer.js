@@ -96,7 +96,8 @@ export class Game {
   isPaused: boolean = false
   lastTime: number = 0
   accumTime: number = 0
-  readonly timeStep: number = 1 / 60
+  accumTimeTest: number = 0
+  readonly timeStep: number = 0.008 //0.001 //0.004 // 1/60 //0.004 //1 / 60
 
   title: string = ''
   mode: PlayerMode
@@ -300,12 +301,24 @@ export class Game {
     }
 
     const currTime = Time.now() / 1000
+    //console.log("currTime =", currTime, "accumTime = ", this.accumTime, "lastTime", this.lastTime)
     const dt = currTime - this.lastTime
     this.accumTime += dt
 
+    const fpsElem = document.querySelector("#fps");
+    const timingElem = document.querySelector("#timing");
+    const fps = 1 / dt
+    //@ts-ignore
+    fpsElem.textContent = fps.toFixed(1);  // update fps display
+    //@ts-ignore
+    timingElem.textContent = this.player.currentTick  // update fps display
+
+
     while (this.accumTime > this.timeStep) {
-      this.update(this.timeStep)
+      this.update(dt)
       this.accumTime -= this.timeStep
+      this.accumTimeTest += dt
+      //console.log("Accum time test", this.accumTimeTest);
     }
 
     this.renderer.draw()
@@ -318,7 +331,7 @@ export class Game {
   }
 
   update(dt: number) {
-    console.log("This update?")
+    //console.log("This update?")
     this.events.emit('preupdate', this)
 
     const camera = this.camera
@@ -327,6 +340,7 @@ export class Game {
     const touch = this.touch
 
     if (this.mode === PlayerMode.REPLAY) {
+      //this.player.update(dt)
       this.player.update(dt)
     } else if (this.mode === PlayerMode.FREE) {
       if (this.touch.pressed) {

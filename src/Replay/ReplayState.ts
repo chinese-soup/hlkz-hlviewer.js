@@ -16,7 +16,7 @@ export class ReplayState {
   }
 
   feedFrame(frame: any) {
-    switch (frame.type) {
+    /*switch (frame.type) {
       case 0:
       case 1: {
         this.cameraPos[0] = frame.camera.position[0]
@@ -31,7 +31,9 @@ export class ReplayState {
 
         break
       }
-    }
+    }*/
+    this.cameraPos = [frame.x, frame.y, frame.z + 28];
+    this.cameraRot = [frame.anglesx, frame.anglesy, frame.anglesz];
   }
 
   // TODO

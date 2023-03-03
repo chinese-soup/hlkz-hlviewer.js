@@ -39,17 +39,20 @@ export class TimeLine extends Component<TimeLineProps, TimeLineState> {
   }
 
   onPostUpdate = () => {
-    //const player = this.props.game.player
-    /*this.setState({
-      progress: player.currentTime / player.replay.length
-    })*/
+    const player = this.props.game.player
+    this.setState({
+      // ORIG: progress: player.currentTime / player.replay.length
+      // TODO SOUP: Magic value for bkzgoldbhop, get rid of [refactor to ReplayData, add field with RealTime substracted by end value]
+      progress: player.currentTime / (player.replay[player.replay.length - 1].time  - 282.939)
+      
+    })
   }
 
   onClick = (e: any) => {
     const rects = e.currentTarget.getClientRects()[0]
     const progress = 1 - (rects.right - e.pageX) / (rects.right - rects.left)
     this.props.game.player.seekByPercent(progress * 100)
-    this.props.game.player.pause()
+    //this.props.game.player.pause() //TODO SOUP
   }
 
   onMouseEnter = () => {
@@ -73,7 +76,7 @@ export class TimeLine extends Component<TimeLineProps, TimeLineState> {
 
   onMouseLeave = () => {
     this.setState({
-      ghostKnobActive: false
+      ghostKnobActive: false 
     })
   }
 

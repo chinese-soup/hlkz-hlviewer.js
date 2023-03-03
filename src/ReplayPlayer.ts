@@ -89,10 +89,12 @@ export class ReplayPlayer {
   }
 
   seek(value: number) {
-    let t = Math.max(0, Math.min(this.replay.length, value))
+    // TODO SOUP: Magic value for bkzgoldbhop, get rid of [refactor to ReplayData, add field with RealTime substracted by end value]
+    let replayLength = this.replay[this.replay.length - 1].time  - 282.939
+    let t = Math.max(0, Math.min(replayLength, value))
 
-    let maps = this.replay.maps
-    for (let i = 0; i < maps.length; ++i) {
+    // let maps = this.replay.maps
+    /*for (let i = 0; i < maps.length; ++i) {
       let chunks = maps[i].chunks
       for (let j = 0; j < chunks.length; ++j) {
         let chunk = chunks[j]
@@ -118,34 +120,72 @@ export class ReplayPlayer {
               r.seek(offset)
               break
             }
-          }
+          }*/
+          for (let j = 0; j < this.replay.length; ++j) {
+            let frame = this.replay[j]
+            // TODO SOUP: Magic value for bkzgoldbhop, get rid of [refactor to ReplayData, add field with RealTime substracted by end value]
+            let frameTime = frame.time - 282.939
+
+            if (frameTime <= t) {
+              //this.state.feedFrame(frame)
+              this.state.feedFrame(frame)
+              this.currentTick = j
+            } else {
+              //r.seek(offset)
+              console.log("ELSE??") // TODO SOUP: what
+              break
+            }
 
           updateGame(this.game, this.state)
 
-          return
+          //return
         }
-      }
-    }
+      //}
+   // }
   }
 
   seekByPercent(value: number) {
     value = Math.max(0, Math.min(value, 100)) / 100
-    value *= this.replay.length
+    //value *= this.replay.length
+    value *= this.replay[this.replay.length - 1].time  - 282.939
+    // TODO SOUP: Magic value for bkzgoldbhop, get rid of [refactor to ReplayData, add field with RealTime substracted by end value]
     this.seek(value)
   }
 
   update(dt: number) {
     if (!this.isPlaying || this.isPaused) {
-      console.log("not update rofl");
+      //console.log("not update rofl");
       return
     }
-    this.currentTick += 1;
+
     let rofl = this.currentTick;
-    console.log("update rofl", rofl, dt, this.currentTick);
-    let state2 = new ReplayState()
-    state2.cameraPos = [this.replay[rofl].x, this.replay[rofl].y, this.replay[rofl].z];
-    state2.cameraRot = [this.replay[rofl].anglesx, this.replay[rofl].anglesy, this.replay[rofl].anglesz];
-    updateGame(this.game, state2);
+
+    if(rofl >= this.replay.length) {
+      this.currentTick = 0;
+      rofl = 0;
+    }
+
+    //console.log("update rofl", rofl, dt, this.currentTick);
+    //let state2 = new ReplayState()
+    //let reset = this.replay[rofl + 1].time - this.replay[rofl].time
+    //console.log("Reset = ", reset, "dt = ", dt, " dt >= reset ===>", (dt>=reset));
+
+    if(dt >= 0.008){
+      this.currentTick += 1;
+    }
+    this.state.feedFrame(this.replay[rofl])
+    //state2.cameraPos = [this.replay[rofl].x, this.replay[rofl].y, this.replay[rofl].z + 28];
+    //state2.cameraRot = [this.replay[rofl].anglesx, this.replay[rofl].anglesy, this.replay[rofl].anglesz];
+    this.currentTime = this.replay[rofl].time - 282.939 // TODO: Magic value for bkzgoldbhop, get rid of
+
+    /*
+      TODO SOUP: Fake out the step sounds, doesn't neccessarily have to be here, though :-)
+    if(this.replay[rofl].buttons & 2) {
+      
+       this.game.soundSystem.play("vox/hello.wav", 1, 0.5)
+    }*/
+
+    updateGame(this.game, this.state);
 
     // @ts-ignore
    /* let state = new ReplayState()
