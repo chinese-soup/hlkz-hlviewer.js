@@ -96,7 +96,7 @@ export type LoadItem =
 
 export class Loader {
   config: Config
-
+  replay_filename_remove_me: string // TODO:SOUP
   replay?: LoadItemReplay
   map?: LoadItemBsp
   skies: LoadItemSky[]
@@ -113,6 +113,7 @@ export class Loader {
     this.skies = []
     this.wads = []
     this.sounds = []
+    this.replay_filename_remove_me = ""
 
     this.events = createNanoEvents()
     this.events.on('error', (err: any) => {
@@ -170,6 +171,8 @@ export class Loader {
     const extension = extname(name)
     if (extension === '.dat') {
       this.loadReplay(name)
+      this.replay_filename_remove_me = name.replace(/\_[0-9]_.*/, "") // TODO: SOUP
+      this.loadMap(this.replay_filename_remove_me + ".bsp") // TODO: SOUP
     } else if (extension === '.bsp') {
       this.loadMap(name)
     } else {
@@ -258,7 +261,7 @@ export class Loader {
 
     //this.loadMap(replay.maps[0].name + '.bsp')
     //TODO: lol
-    this.loadMap("bkz_goldbhop.bsp")
+    //this.loadMap("bkz_goldbhop.bsp")
 
     /*const sounds = replay.maps[0].resources.sounds
     sounds.forEach((sound: any) => {

@@ -97,7 +97,7 @@ export class Game {
   lastTime: number = 0
   accumTime: number = 0
   accumTimeTest: number = 0
-  readonly timeStep: number = 0.008 //0.001 //0.004 // 1/60 //0.004 //1 / 60
+  readonly timeStep: number = 0.008 // 0.008 //0.001 //0.004 // 1/60 //0.004 //1 / 60
 
   title: string = ''
   mode: PlayerMode

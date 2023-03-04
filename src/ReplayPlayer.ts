@@ -163,14 +163,15 @@ export class ReplayPlayer {
     if(rofl >= this.replay.length) {
       this.currentTick = 0;
       rofl = 0;
+      this.reset()
     }
 
     //console.log("update rofl", rofl, dt, this.currentTick);
     //let state2 = new ReplayState()
     //let reset = this.replay[rofl + 1].time - this.replay[rofl].time
     //console.log("Reset = ", reset, "dt = ", dt, " dt >= reset ===>", (dt>=reset));
-
-    if(dt >= 0.008){
+    console.log("Speed = ", this.speed, "0.008*this.speed = ", (this.speed*0.008))
+    if(dt >= (0.008*this.speed)){
       this.currentTick += 1;
     }
     this.state.feedFrame(this.replay[rofl])
